@@ -5,6 +5,7 @@ const path = require('path');
 const config = require('../config/secret');
 var mailer = require('../helpers/mailer')
 var users = require('../models/user');
+var admins = require('../models/admin')
 
 var router = express.Router()
 
@@ -13,7 +14,8 @@ router.post("/registerUser",(req,res)=>{
   var user = new users({
     name: req.body.name,
     email: req.body.email,
-    password: hashedPassword
+    password: hashedPassword,
+    userType:'customer'
   })
   user.save((err,newUser)=>{
     if(err) res.status(409).send(err)
@@ -56,6 +58,20 @@ router.get("/verifyUserEmail/:id",(req,res)=>{
   }).catch((err)=>{
     console.log(err)
     res.status(500).send("DB error")
+  })
+})
+
+router.post("/adminLogin",(req,res)=>{
+  admins.findOne({email:req.body.email},(err,user)=>{
+    if(err) res.status(500).send("There has been an error")
+    else if(user == null) res.status(404).send("No account with given credentials exists")
+    else{
+      if(bcrypt.compareSync(req.body.password,user.password)){
+        var token = jwt.sign({ id: user._id }, config.secret, { expiresIn: 86400 });
+        res.send({"token":token})
+      }
+      else res.status(403).send("Auth Error")
+    }
   })
 })
 

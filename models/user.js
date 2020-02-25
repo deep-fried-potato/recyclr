@@ -23,6 +23,11 @@ var mongoose = require('mongoose');
     location:{
       lat: Number,
       lng: Number
+    },
+    userType:{
+      type:String,
+      required:true,
+      enum:['customer','delivery','shop']
     }
   });
 module.exports = mongoose.model('user',userSchema)
