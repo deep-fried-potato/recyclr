@@ -1,0 +1,26 @@
+{
+  "name": "recyclr",
+  "version": "1.0.0",
+  "description": "E-Waste Recycling ecosystem, for making the most out of electronic devices including those past their usable lifetime",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/deep-fried-potato/recyclr.git"
+  },
+  "author": "Sri Sailesh Meegada",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/deep-fried-potato/recyclr/issues"
+  },
+  "homepage": "https://github.com/deep-fried-potato/recyclr#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.9.2",
+    "nodemailer": "^6.4.3"
+  }
+}
