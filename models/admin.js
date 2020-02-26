@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
   var Schema = mongoose.Schema;
 
-  var userSchema = new Schema({
+  var adminSchema = new Schema({
     name: String,
     email: {
       type:String,
@@ -14,4 +14,4 @@ var mongoose = require('mongoose');
       default:false
     }
   });
-module.exports = mongoose.model('user',userSchema)
+module.exports = mongoose.model('admin',adminSchema)
