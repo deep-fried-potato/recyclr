@@ -19,7 +19,7 @@ router.post("/registerUser",(req,res)=>{
     userType:'customer'
   })
   user.save((err,newUser)=>{
-    if(err) res.status(409).send("Duplicate Entry")
+    if(err) res.status(409).send("Account Already Exists")
     else{
       var token = jwt.sign({ id: newUser._id}, config.secret, {expiresIn: 86400});
       var mailOptions = {
@@ -40,14 +40,14 @@ router.post("/registerUser",(req,res)=>{
 
 router.post("/userLogin",(req,res)=>{
   users.findOne({email:req.body.email,loginType:'local'},(err,user)=>{
-    if(err) res.status(500).send("There has been an error")
+    if(err) res.status(500).send("Internal Server Error")
     else if(user == null) res.status(404).send("No account with given credentials exists")
     else{
       if(bcrypt.compareSync(req.body.password,user.password)){
         var token = jwt.sign({ id: user._id }, config.secret, { expiresIn: 86400 });
         res.send({"token":token})
       }
-      else res.status(403).send("Auth Error")
+      else res.status(403).send("Wrong Password")
     }
   })
 })
