@@ -4,7 +4,8 @@
   "description": "E-Waste Recycling ecosystem, for making the most out of electronic devices including those past their usable lifetime",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --timeout 10000",
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
@@ -19,9 +20,12 @@
   "dependencies": {
     "axios": "^0.19.2",
     "bcryptjs": "^2.4.3",
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
     "express": "^4.17.1",
     "googleapis": "^47.0.0",
     "jsonwebtoken": "^8.5.1",
+    "mocha": "^7.1.0",
     "mongoose": "^5.9.2",
     "nodemailer": "^6.4.3"
   }

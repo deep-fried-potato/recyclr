@@ -114,6 +114,13 @@ router.post("/adminLogin",(req,res)=>{
   })
 })
 
+router.post("/testcleanup",(req,res)=>{
+  users.findOneAndDelete({email:"test@test.com"},(err,user)=>{
+    if(err) res.status(500).send("Internal Server Error")
+    else res.send("Deleted")
+  })
+})
+
 
 
 module.exports = router
