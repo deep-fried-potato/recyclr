@@ -6,7 +6,8 @@ const config = require('../config/secret');
 var mailer = require('../helpers/mailer')
 var token2id = require('../helpers/token2id')
 var users = require('../models/user');
-var admins = require('../models/admin')
+var admins = require('../models/admin');
+var parts = require('../models/part');
 
 var router = express.Router()
 
@@ -117,6 +118,16 @@ router.post("/createShop",adminValidate,(req,res)=>{
       });
       res.send([newUser,{"token":token}])
     }
+  })
+})
+
+router.post("/createPart",adminValidate,(req,res)=>{
+  newPart = req.body
+  //ADD INVENTORY HIDING HERE!!!!
+  parts.create(newPart).then((result)=>{
+    res.send(result)
+  }).catch((err)=>{
+    res.status(400).send("Invalid/Missing Details")
   })
 })
 
