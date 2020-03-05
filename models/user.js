@@ -27,12 +27,12 @@ var mongoose = require('mongoose');
     userType:{
       type:String,
       required:true,
-      enum:['customer','delivery','shop']
+      enum:['customer','shop']
     },
     loginType:{
       type:String,
       enum:['local','google'],
-      default:'local'      
+      default:'local'
     }
   });
 module.exports = mongoose.model('user',userSchema)

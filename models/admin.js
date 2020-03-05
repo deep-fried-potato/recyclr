@@ -8,10 +8,6 @@ var mongoose = require('mongoose');
       required: true,
       unique: true
     },
-    password: String,
-    _isSuperUser:{
-      type:Boolean,
-      default:false
-    }
+    password: String
   });
 module.exports = mongoose.model('admin',adminSchema)
