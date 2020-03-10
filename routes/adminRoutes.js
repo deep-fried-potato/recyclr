@@ -89,7 +89,7 @@ router.post("/initializeAdmin",(req,res)=>{
   })
 })
 
-router.post("/createShop",adminValidate,(req,res)=>{
+router.post("/shop",adminValidate,(req,res)=>{
   var hashedPassword = bcrypt.hashSync(req.body.password, 8);
   var user = new users({
     name: req.body.name,
@@ -121,7 +121,7 @@ router.post("/createShop",adminValidate,(req,res)=>{
   })
 })
 
-router.post("/createPart",adminValidate,(req,res)=>{
+router.post("/part",adminValidate,(req,res)=>{
   newPart = req.body
   //ADD INVENTORY HIDING HERE!!!!
   parts.create(newPart).then((result)=>{
@@ -131,6 +131,23 @@ router.post("/createPart",adminValidate,(req,res)=>{
   })
 })
 
+router.get("/part",adminValidate,(req,res)=>{
+  parts.find({}).then((result)=>{
+    res.send(result)
+  }).catch((err)=>{
+    console.log(err)
+    res.status(400).send("Invalid Query")
+  })
+})
+
+router.post("/device",adminValidate,(req,res)=>{
+  newDevice = req.body
+  devices.create(newDevice).then((result)=>{
+    res.send(result)
+  }).catch((err)=>{
+    res.status(400).send("Invalid/Missing Details")
+  })
+})
 
 
 function adminValidate(req,res,next){
