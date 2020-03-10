@@ -8,7 +8,7 @@ var token2id = require('../helpers/token2id')
 var users = require('../models/user');
 var admins = require('../models/admin');
 var parts = require('../models/part');
-
+var devices = require('../models/device');
 var router = express.Router()
 
 router.post("/createAdmin",adminValidate,(req,res)=>{
@@ -89,7 +89,7 @@ router.post("/initializeAdmin",(req,res)=>{
   })
 })
 
-router.post("/shop",adminValidate,(req,res)=>{
+router.post("/partner",adminValidate,(req,res)=>{
   var hashedPassword = bcrypt.hashSync(req.body.password, 8);
   var user = new users({
     name: req.body.name,
@@ -100,7 +100,7 @@ router.post("/shop",adminValidate,(req,res)=>{
     _phoneVerified:true,
     address:req.body.address,
     location:req.body.location,
-    userType:'shop'
+    userType:'partner'
   })
   user.save((err,newUser)=>{
     if(err) res.status(409).send("Account Already Exists")
