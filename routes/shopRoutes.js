@@ -33,7 +33,7 @@ router.get("/part",userValidate,(req,res)=>{
 })
 
 router.get("/device",userValidate,(req,res)=>{
-  devices.find({req.query}).populate("parts").then((result)=>{
+  devices.find(req.query).populate("parts").then((result)=>{
     res.send(result)
   }).catch((err)=>{
     console.log(err)
