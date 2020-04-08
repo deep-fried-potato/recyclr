@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const path = require('path');
 const config = require('../config/secret');
+const querystring = require('querystring');
 var mailer = require('../helpers/mailer')
 var token2id = require('../helpers/token2id')
 var users = require('../models/user');
@@ -23,7 +24,7 @@ router.post("/part",adminValidate,(req,res)=>{
 })
 
 router.get("/part",userValidate,(req,res)=>{
-  parts.find({}).then((result)=>{
+  parts.find(req.query).then((result)=>{
     res.send(result)
   }).catch((err)=>{
     console.log(err)
@@ -32,7 +33,7 @@ router.get("/part",userValidate,(req,res)=>{
 })
 
 router.get("/device",userValidate,(req,res)=>{
-  devices.find({}).populate("parts").then((result)=>{
+  devices.find({req.query}).populate("parts").then((result)=>{
     res.send(result)
   }).catch((err)=>{
     console.log(err)
