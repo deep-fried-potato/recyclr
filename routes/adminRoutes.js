@@ -17,10 +17,11 @@ router.post("/createAdmin",adminValidate,(req,res)=>{
     name: req.body.name,
     email: req.body.email,
     password: hashedPassword,
-    loginType:'local'
+    loginType:'local',
+    userType:'admin'
   })
   admin.save((err,newAdmin)=>{
-    if(err) res.status(409).send({message:"Conflict error, admin with same email exists"})
+    if(err) res.status(409).send({message:"Conflict error, user with same email exists"})
     else{
       var token = jwt.sign({ id: newAdmin._id}, config.secret, {expiresIn: 86400});
       var mailOptions = {
