@@ -27,7 +27,7 @@ var userSchema = new Schema({
   userType:{
     type:String,
     required:true,
-    enum:['customer','partner']
+    enum:['customer','partner','admin']
   },
   loginType:{
     type:String,

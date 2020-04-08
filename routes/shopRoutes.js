@@ -7,7 +7,7 @@ const querystring = require('querystring');
 var mailer = require('../helpers/mailer')
 var token2id = require('../helpers/token2id')
 var users = require('../models/user');
-var admins = require('../models/admin');
+
 var parts = require('../models/part');
 var devices = require('../models/device');
 var router = express.Router()
@@ -53,12 +53,12 @@ router.post("/device",adminValidate,(req,res)=>{
 
 function adminValidate(req,res,next){
   token2id(req.get("x-access-token")).then((id)=>{
-    admins.findById(id).then((admin)=>{
-      if(admin){
+    users.findById(id).then((admin)=>{
+      if(admin.userType=='admin'){
         req.body.adminId = id;
         next();
       }
-      else res.status(403).send({message:"Not Authorized"})
+      else res.status(403).send({message:"user is not an admin"})
     })
   }).catch((err)=>{
     res.status(403).send({message:"Token Error"})
@@ -67,22 +67,9 @@ function adminValidate(req,res,next){
 
 function userValidate(req,res,next){
   token2id(req.get("x-access-token")).then((id)=>{
-    users.findById(id).then((user)=>{
-      if(user){
+    users.findById(id).then((admin)=>{
         req.body.userId = id;
         next();
-      }
-      else{
-        admins.findById(id).then((admin)=>{
-          if(admin){
-            req.body.adminId = id;
-            next();
-          }
-          else res.status(403).send({message:"Not Authorized"})
-        }).catch((err)=>{
-          res.status(403).send({message:"Token Error"})
-        })
-      }
     })
   }).catch((err)=>{
     res.status(403).send({message:"Token Error"})

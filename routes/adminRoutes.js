@@ -6,17 +6,18 @@ const config = require('../config/secret');
 var mailer = require('../helpers/mailer')
 var token2id = require('../helpers/token2id')
 var users = require('../models/user');
-var admins = require('../models/admin');
+
 var parts = require('../models/part');
 var devices = require('../models/device');
 var router = express.Router()
 
 router.post("/createAdmin",adminValidate,(req,res)=>{
   var hashedPassword = bcrypt.hashSync(req.body.password, 8);
-  var admin = new admins({
+  var admin = new users({
     name: req.body.name,
     email: req.body.email,
     password: hashedPassword,
+    loginType:'local'
   })
   admin.save((err,newAdmin)=>{
     if(err) res.status(409).send({message:"Conflict error, admin with same email exists"})
@@ -32,62 +33,11 @@ router.post("/createAdmin",adminValidate,(req,res)=>{
         if (error) console.log(error);
         else console.log('Email sent: ' + info.response);
       });
-      res.send([newAdmin,{"token":token}])
+      res.send({user:newAdmin,"token":token}])
     }
   })
 })
 
-router.post("/login",(req,res)=>{
-  admins.findOne({email:req.body.email},(err,user)=>{
-    if(err) res.status(500).send({message:"Internal Server Error"})
-    else if(user == null) res.status(404).send({message:"No account with given credentials exists"})
-    else{
-      if(bcrypt.compareSync(req.body.password,user.password)){
-        var token = jwt.sign({ id: user._id }, config.secret, { expiresIn: 86400 });
-        res.send({"token":token})
-      }
-      else res.status(403).send({message:"Wrong password"})
-    }
-  })
-})
-
-router.post("/initializeAdmin",(req,res)=>{
-  admins.find().then((result)=>{
-    if(result.length>0){
-      console.log(result)
-      res.status(403).send({message:"Admin Already Exists"})
-    }
-    else{
-      console.log("NO ADMIN")
-      var hashedPassword = bcrypt.hashSync(req.body.password, 8);
-      var admin = new admins({
-        name: req.body.name,
-        email: req.body.email,
-        password: hashedPassword,
-      })
-      admin.save((err,newAdmin)=>{
-        if(err) res.status(409).send({message:"Admin Already exists"})
-        else{
-          var token = jwt.sign({ id: newAdmin._id}, config.secret, {expiresIn: 86400});
-          var mailOptions = {
-            from: 'citra.app.mailer@gmail.com',
-            to: newAdmin.email,
-            subject: 'You are now an Admin',
-            text: 'You are now an admin at Recyclr. Please Use this email ID to log in.'
-          };
-          mailer.sendMail(mailOptions, function(error, info){
-            if (error) console.log(error);
-            else console.log('Email sent: ' + info.response);
-          });
-          res.send([newAdmin,{"token":token}])
-        }
-      })
-    }
-  }).catch((err)=>{
-    console.log(err)
-    res.send()
-  })
-})
 
 router.post("/partner",adminValidate,(req,res)=>{
   var hashedPassword = bcrypt.hashSync(req.body.password, 8);
@@ -116,45 +66,21 @@ router.post("/partner",adminValidate,(req,res)=>{
         if (error) console.log(error);
         else console.log('Email sent: ' + info.response);
       });
-      res.send([newUser,{"token":token}])
+      res.send({user:newUser,"token":token}])
     }
   })
 })
 
-router.post("/part",adminValidate,(req,res)=>{
-  newPart = req.body
-  //ADD INVENTORY HIDING HERE!!!!
-  parts.create(newPart).then((result)=>{
-    res.send(result)
-  }).catch((err)=>{
-    res.status(400).send({message:"Invalid/Missing Details"})
-  })
-})
-
-router.get("/part",adminValidate,(req,res)=>{
-  parts.find({}).then((result)=>{
-    res.send(result)
-  }).catch((err)=>{
-    console.log(err)
-    res.status(400).send({message:"Invalid Query"})
-  })
-})
-
-router.post("/device",adminValidate,(req,res)=>{
-  newDevice = req.body
-  devices.create(newDevice).then((result)=>{
-    res.send(result)
-  }).catch((err)=>{
-    res.status(400).send({message:"Invalid/Missing Details"})
-  })
-})
 
 
 function adminValidate(req,res,next){
   token2id(req.get("x-access-token")).then((id)=>{
-    admins.findById(id).then((admin)=>{
-      req.body.adminId = id;
-      next();
+    users.findById(id).then((admin)=>{
+      if(admin.userType=='admin'){
+        req.body.adminId = id;
+        next();
+      }
+      else res.status(403).send({message:"user is not an admin"})
     })
   }).catch((err)=>{
     res.status(403).send({message:"Token Error"})

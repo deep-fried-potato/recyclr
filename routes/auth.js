@@ -6,7 +6,7 @@ const path = require('path');
 const config = require('../config/secret');
 var mailer = require('../helpers/mailer')
 var users = require('../models/user');
-var admins = require('../models/admin')
+
 
 var router = express.Router()
 
@@ -32,7 +32,7 @@ router.post("/registerUser",(req,res)=>{
         if (error) console.log(error);
         else console.log('Email sent: ' + info.response);
       });
-      res.send([newUser,{"token":token}])
+      res.send({user:newUser,"token":token}})
     }
   })
 })
@@ -78,7 +78,7 @@ router.post("/googlesignin",(req,res)=>{
       runValidators: true
     }).then((user)=>{
       var token = jwt.sign({ id: user._id }, config.secret, { expiresIn: 86400 });
-      res.send({"token":token})
+      res.send({user:user,"token":token})
     }).catch((err)=>{
       console.log(err)
       res.status(400).send({message:"Invalid values provides"})
@@ -100,19 +100,7 @@ router.get("/verifyUserEmail/:id",(req,res)=>{
   })
 })
 
-router.post("/adminLogin",(req,res)=>{
-  admins.findOne({email:req.body.email},(err,user)=>{
-    if(err) res.status(500).send({message:"Internal Server Error"})
-    else if(user == null) res.status(404).send({message:"No account with given credentials exists"})
-    else{
-      if(bcrypt.compareSync(req.body.password,user.password)){
-        var token = jwt.sign({ id: user._id }, config.secret, { expiresIn: 86400 });
-        res.send({user:user,"token":token})
-      }
-      else res.status(403).send({message:"Auth Error"})
-    }
-  })
-})
+
 
 router.post("/testcleanup",(req,res)=>{
   users.findOneAndDelete({email:"test@test.com"},(err,user)=>{
