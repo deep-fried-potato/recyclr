@@ -19,7 +19,7 @@ router.post("/registerUser",(req,res)=>{
     userType:'customer'
   })
   user.save((err,newUser)=>{
-    if(err) res.status(409).send("Account Already Exists")
+    if(err) res.status(409).send({message:"Account Already Exists"})
     else{
       var token = jwt.sign({ id: newUser._id}, config.secret, {expiresIn: 86400});
       var mailOptions = {
@@ -40,14 +40,14 @@ router.post("/registerUser",(req,res)=>{
 
 router.post("/userLogin",(req,res)=>{
   users.findOne({email:req.body.email,loginType:'local'},(err,user)=>{
-    if(err) res.status(500).send("Internal Server Error")
-    else if(user == null) res.status(404).send("No account with given credentials exists")
+    if(err) res.status(500).send({message:"Internal Server Error"})
+    else if(user == null) res.status(404).send({message:"No account with given credentials exists"})
     else{
       if(bcrypt.compareSync(req.body.password,user.password)){
         var token = jwt.sign({ id: user._id }, config.secret, { expiresIn: 86400 });
-        res.send({"token":token})
+        res.send({user:user,"token":token})
       }
-      else res.status(403).send("Wrong Password")
+      else res.status(403).send({message:"Wrong Password"})
     }
   })
 })
@@ -81,11 +81,11 @@ router.post("/googlesignin",(req,res)=>{
       res.send({"token":token})
     }).catch((err)=>{
       console.log(err)
-      res.status(400).send("Invalid values provides")
+      res.status(400).send({message:"Invalid values provides"})
     })
 
   }).catch((err)=>{
-    res.status(400).send("Invalid Token Provided")
+    res.status(400).send({message:"Invalid Token Provided"})
     console.log(err)
   })
 })
@@ -93,30 +93,30 @@ router.post("/googlesignin",(req,res)=>{
 router.get("/verifyUserEmail/:id",(req,res)=>{
   users.findByIdAndUpdate(req.params.id,{_emailVerified:true}).then((user)=>{
     if(user) res.sendFile(path.join(__dirname+'/../html/verified.html'));
-    else res.status(404).send("Account Not Found")
+    else res.status(404).send({message:"Account Not Found"})
   }).catch((err)=>{
     console.log(err)
-    res.status(500).send("DB error")
+    res.status(500).send({message:"DB error"})
   })
 })
 
 router.post("/adminLogin",(req,res)=>{
   admins.findOne({email:req.body.email},(err,user)=>{
-    if(err) res.status(500).send("There has been an error")
-    else if(user == null) res.status(404).send("No account with given credentials exists")
+    if(err) res.status(500).send({message:"Internal Server Error"})
+    else if(user == null) res.status(404).send({message:"No account with given credentials exists"})
     else{
       if(bcrypt.compareSync(req.body.password,user.password)){
         var token = jwt.sign({ id: user._id }, config.secret, { expiresIn: 86400 });
-        res.send({"token":token})
+        res.send({user:user,"token":token})
       }
-      else res.status(403).send("Auth Error")
+      else res.status(403).send({message:"Auth Error"})
     }
   })
 })
 
 router.post("/testcleanup",(req,res)=>{
   users.findOneAndDelete({email:"test@test.com"},(err,user)=>{
-    if(err) res.status(500).send("Internal Server Error")
+    if(err) res.status(500).send({message:"Internal Server Error"})
     else res.send("Deleted")
   })
 })

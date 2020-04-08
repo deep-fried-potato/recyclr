@@ -19,7 +19,7 @@ router.post("/createAdmin",adminValidate,(req,res)=>{
     password: hashedPassword,
   })
   admin.save((err,newAdmin)=>{
-    if(err) res.status(409).send(err)
+    if(err) res.status(409).send({message:"Conflict error, admin with same email exists"})
     else{
       var token = jwt.sign({ id: newAdmin._id}, config.secret, {expiresIn: 86400});
       var mailOptions = {
@@ -39,14 +39,14 @@ router.post("/createAdmin",adminValidate,(req,res)=>{
 
 router.post("/login",(req,res)=>{
   admins.findOne({email:req.body.email},(err,user)=>{
-    if(err) res.status(500).send("Internal Server Error")
-    else if(user == null) res.status(404).send("No account with given credentials exists")
+    if(err) res.status(500).send({message:"Internal Server Error"})
+    else if(user == null) res.status(404).send({message:"No account with given credentials exists"})
     else{
       if(bcrypt.compareSync(req.body.password,user.password)){
         var token = jwt.sign({ id: user._id }, config.secret, { expiresIn: 86400 });
         res.send({"token":token})
       }
-      else res.status(403).send("Wrong Password")
+      else res.status(403).send({message:"Wrong password"})
     }
   })
 })
@@ -55,7 +55,7 @@ router.post("/initializeAdmin",(req,res)=>{
   admins.find().then((result)=>{
     if(result.length>0){
       console.log(result)
-      res.status(403).send("Admin Already Exists")
+      res.status(403).send({message:"Admin Already Exists"})
     }
     else{
       console.log("NO ADMIN")
@@ -66,7 +66,7 @@ router.post("/initializeAdmin",(req,res)=>{
         password: hashedPassword,
       })
       admin.save((err,newAdmin)=>{
-        if(err) res.status(409).send(err)
+        if(err) res.status(409).send({message:"Admin Already exists"})
         else{
           var token = jwt.sign({ id: newAdmin._id}, config.secret, {expiresIn: 86400});
           var mailOptions = {
@@ -103,7 +103,7 @@ router.post("/partner",adminValidate,(req,res)=>{
     userType:'partner'
   })
   user.save((err,newUser)=>{
-    if(err) res.status(409).send("Account Already Exists")
+    if(err) res.status(409).send({message:"Account Already Exists"})
     else{
       var token = jwt.sign({ id: newUser._id}, config.secret, {expiresIn: 86400});
       var mailOptions = {
@@ -127,7 +127,7 @@ router.post("/part",adminValidate,(req,res)=>{
   parts.create(newPart).then((result)=>{
     res.send(result)
   }).catch((err)=>{
-    res.status(400).send("Invalid/Missing Details")
+    res.status(400).send({message:"Invalid/Missing Details"})
   })
 })
 
@@ -136,7 +136,7 @@ router.get("/part",adminValidate,(req,res)=>{
     res.send(result)
   }).catch((err)=>{
     console.log(err)
-    res.status(400).send("Invalid Query")
+    res.status(400).send({message:"Invalid Query"})
   })
 })
 
@@ -145,7 +145,7 @@ router.post("/device",adminValidate,(req,res)=>{
   devices.create(newDevice).then((result)=>{
     res.send(result)
   }).catch((err)=>{
-    res.status(400).send("Invalid/Missing Details")
+    res.status(400).send({message:"Invalid/Missing Details"})
   })
 })
 
@@ -157,7 +157,7 @@ function adminValidate(req,res,next){
       next();
     })
   }).catch((err)=>{
-    res.status(403).send("Token Error")
+    res.status(403).send({message:"Token Error"})
   })
 }
 module.exports = router

@@ -19,7 +19,7 @@ router.post("/part",adminValidate,(req,res)=>{
   parts.create(newPart).then((result)=>{
     res.send(result)
   }).catch((err)=>{
-    res.status(400).send("Invalid/Missing Details")
+    res.status(400).send({message:"Invalid/Missing Details"})
   })
 })
 
@@ -28,7 +28,7 @@ router.get("/part",userValidate,(req,res)=>{
     res.send(result)
   }).catch((err)=>{
     console.log(err)
-    res.status(400).send("Invalid Query")
+    res.status(400).send({message:"Invalid Query"})
   })
 })
 
@@ -37,7 +37,7 @@ router.get("/device",userValidate,(req,res)=>{
     res.send(result)
   }).catch((err)=>{
     console.log(err)
-    res.status(400).send("Invalid Query")
+    res.status(400).send({message:"Invalid Query"})
   })
 })
 
@@ -46,7 +46,7 @@ router.post("/device",adminValidate,(req,res)=>{
   devices.create(newDevice).then((result)=>{
     res.send(result)
   }).catch((err)=>{
-    res.status(400).send("Invalid/Missing Details")
+    res.status(400).send({message:"Invalid/Missing Details"})
   })
 })
 
@@ -58,10 +58,10 @@ function adminValidate(req,res,next){
         req.body.adminId = id;
         next();
       }
-      else res.status(403).send("Not Authorized")
+      else res.status(403).send({message:"Not Authorized"})
     })
   }).catch((err)=>{
-    res.status(403).send("Token Error")
+    res.status(403).send({message:"Token Error"})
   })
 }
 
@@ -78,14 +78,14 @@ function userValidate(req,res,next){
             req.body.adminId = id;
             next();
           }
-          else res.status(403).send("Not Authorized")
+          else res.status(403).send({message:"Not Authorized"})
         }).catch((err)=>{
-          res.status(403).send("Token Error")
+          res.status(403).send({message:"Token Error"})
         })
       }
     })
   }).catch((err)=>{
-    res.status(403).send("Token Error")
+    res.status(403).send({message:"Token Error"})
   })
 }
 module.exports = router
