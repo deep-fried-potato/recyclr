@@ -32,7 +32,7 @@ router.post("/registerUser",(req,res)=>{
         if (error) console.log(error);
         else console.log('Email sent: ' + info.response);
       });
-      res.send({user:newUser,"token":token}})
+      res.send({user:newUser,"token":token})
     }
   })
 })
