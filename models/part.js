@@ -10,6 +10,7 @@ var partSchema = new Schema({
   },
   description:String,
   variant:String,
+  price:Number,
   availability:[{
     shop:{
       type:ObjectId,
