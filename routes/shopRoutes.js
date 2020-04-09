@@ -23,6 +23,24 @@ router.post("/part",adminValidate,(req,res)=>{
   })
 })
 
+router.put("/part/:id",adminValidate,(req,res)=>{
+  parts.findByIdAndUpdate(req.params.id,req.body,{new:true}).then((result)=>{
+    res.send(result)
+  }).catch((err)=>{
+    console.log(err)
+    res.status(400).send({message:"Invalid Query"})
+  })
+})
+
+router.delete("/part/:id",adminValidate,(req,res)=>{
+  parts.findByIdAndRemove(req.params.id).then((result)=>{
+    res.send(result)
+  }).catch((err)=>{
+    console.log(err)
+    res.status(400).send({message:"Invalid Query"})
+  })
+})
+
 router.get("/part",userValidate,(req,res)=>{
   parts.find(req.query).then((result)=>{
     res.send(result)
@@ -34,6 +52,24 @@ router.get("/part",userValidate,(req,res)=>{
 
 router.get("/device",userValidate,(req,res)=>{
   devices.find(req.query).populate("parts").then((result)=>{
+    res.send(result)
+  }).catch((err)=>{
+    console.log(err)
+    res.status(400).send({message:"Invalid Query"})
+  })
+})
+
+router.put("/device/:id",adminValidate,(req,res)=>{
+  devices.findByIdAndUpdate(req.params.id,req.body,{new:true}).populate("parts").then((result)=>{
+    res.send(result)
+  }).catch((err)=>{
+    console.log(err)
+    res.status(400).send({message:"Invalid Query"})
+  })
+})
+
+router.delete("/device/:id",adminValidate,(req,res)=>{
+  devices.findByIdAndRemove(req.params.id).populate("parts").then((result)=>{
     res.send(result)
   }).catch((err)=>{
     console.log(err)
