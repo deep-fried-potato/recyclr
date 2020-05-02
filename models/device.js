@@ -3,6 +3,7 @@ var Schema = mongoose.Schema;
 var ObjectId = Schema.Types.ObjectId
 var deviceSchema = new Schema({
   name: String,
+  photo:String,
   description:String,
   manufacturer:String,
   parts:[{

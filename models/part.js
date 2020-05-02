@@ -3,6 +3,7 @@ var Schema = mongoose.Schema;
 var ObjectId = Schema.Types.ObjectId
 var partSchema = new Schema({
   name: String,
+  photo:String,
   partType:{
     type:String,
     required:true,

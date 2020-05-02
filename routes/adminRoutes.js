@@ -17,6 +17,7 @@ router.post("/createAdmin",adminValidate,(req,res)=>{
     name: req.body.name,
     email: req.body.email,
     password: hashedPassword,
+    photo:req.body.photo,
     loginType:'local',
     userType:'admin'
   })
@@ -46,6 +47,7 @@ router.post("/partner",adminValidate,(req,res)=>{
     name: req.body.name,
     email: req.body.email,
     password: hashedPassword,
+    photo:req.body.photo,
     _emailVerified:true,
     phone:req.body.phone,
     _phoneVerified:true,
@@ -72,6 +74,30 @@ router.post("/partner",adminValidate,(req,res)=>{
   })
 })
 
+router.get("/user",adminValidate,(req,res)=>{
+  users.find(req.query).then((result)=>{
+    res.send(result)
+  }).catch((err)=>{
+    console.log(err)
+    res.status(400).send({message:"Invalid Query"})
+  })
+})
+router.put("/user/:id",adminValidate,(req,res)=>{
+  users.findByIdAndUpdate(req.params.id,req.body,{new:true}).then((result)=>{
+    res.send(result)
+  }).catch((err)=>{
+    console.log(err)
+    res.status(400).send({message:"Invalid Query"})
+  })
+})
+router.delete("/user/:id",adminValidate,(req,res)=>{
+  parts.findByIdAndRemove(req.params.id).then((result)=>{
+    res.send(result)
+  }).catch((err)=>{
+    console.log(err)
+    res.status(400).send({message:"Invalid Query"})
+  })
+})
 
 
 function adminValidate(req,res,next){

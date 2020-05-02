@@ -103,7 +103,7 @@ function adminValidate(req,res,next){
 
 function userValidate(req,res,next){
   token2id(req.get("x-access-token")).then((id)=>{
-    users.findById(id).then((admin)=>{
+    users.findById(id).then((user)=>{
         req.body.userId = id;
         next();
     })

@@ -16,6 +16,8 @@ router.post("/registerUser",(req,res)=>{
     name: req.body.name,
     email: req.body.email,
     password: hashedPassword,
+    photo:req.body.photo,
+    location:req.body.location,
     userType:'customer'
   })
   user.save((err,newUser)=>{
@@ -100,7 +102,22 @@ router.get("/verifyUserEmail/:id",(req,res)=>{
   })
 })
 
-
+router.get("/profile",userValidate,(req,res)=>{
+  users.findById(req.body.userId).then((user)=>{
+    res.send(user)
+  }).catch((err)=>{
+    console.log(err)
+    res.status(500).send({message:"DB error"})
+  })
+})
+router.put("/profile",userValidate,(req,res)=>{
+  users.findByIdAndUpdate(req.body.userId,req.body,{new:true}).then((result)=>{
+    res.send(result)
+  }).catch((err)=>{
+    console.log(err)
+    res.status(400).send({message:"Invalid Query"})
+  })
+})
 
 router.post("/testcleanup",(req,res)=>{
   users.findOneAndDelete({email:"test@test.com"},(err,user)=>{
@@ -109,6 +126,16 @@ router.post("/testcleanup",(req,res)=>{
   })
 })
 
+function userValidate(req,res,next){
+  token2id(req.get("x-access-token")).then((id)=>{
+    users.findById(id).then((user)=>{
+        req.body.userId = id;
+        next();
+    })
+  }).catch((err)=>{
+    res.status(403).send({message:"Token Error"})
+  })
+}
 
 
 module.exports = router
