@@ -13,6 +13,7 @@ app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
 var auth = require('./routes/auth');
 var adminRoutes = require('./routes/adminRoutes');
 var shopRoutes = require('./routes/shopRoutes');
+var partnerRoutes = require('./routes/partnerRoutes');
 
 app.use((req,res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -23,6 +24,7 @@ app.use((req,res, next) => {
 app.use("/auth",auth)
 app.use("/admin",adminRoutes)
 app.use("/shop",shopRoutes)
+app.use("/partner",partnerRoutes)
 
 mongoose.connect('mongodb+srv://dbman:royya123@recyclr-pj0vn.mongodb.net/test?retryWrites=true&w=majority', {useNewUrlParser: true, useUnifiedTopology: true });
 // mongoose.set('useCreateIndex',true);

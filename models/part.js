@@ -17,7 +17,7 @@ var partSchema = new Schema({
       type:ObjectId,
       ref:'user'
     },
-    quanitity:Number
+    quantity:Number
   }]
 });
 module.exports = mongoose.model('part',partSchema)
