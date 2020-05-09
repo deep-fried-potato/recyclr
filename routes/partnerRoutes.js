@@ -63,6 +63,41 @@ router.post("/inventory",partnerValidate,(req,res)=>{
   })
 })
 
+router.delete("/inventory",partnerValidate,(req,res)=>{
+  users.findById(req.body.userId).then((user)=>{
+    if(user.inventory.filter(item => item.part == req.body.partId)[0].quantity > 1){
+      users.findOneAndUpdate({_id:req.body.userId,"inventory.part":req.body.partId},{$inc:{"inventory.$.quantity":-1}},{new:true}).then((user)=>{
+        parts.findOneAndUpdate({_id:req.body.partId,"availability.shop":req.body.userId},{$inc:{"availability.$.quantity":-1}},{new:true}).then((part)=>{
+            res.send({user:user,part:part})
+        }).catch((err)=>{
+          console.log(err)
+          res.status(400).send({message:"Bad Request"})
+        })
+      }).catch((err)=>{
+        console.log(err)
+        res.status(400).send({message:"Bad Request"})
+      })
+    }
+    else{
+      users.findByIdAndUpdate(req.body.userId,{
+        $pull:{inventory:{part:req.body.partId}}
+      },{new:true}).then((user)=>{
+        parts.findByIdAndUpdate(req.body.partId,{
+          $pull:{availability:{shop:req.body.userId}}
+        },{new:true}).then((part)=>{
+          res.send({user:user,part:part})
+        }).catch((err)=>{
+          console.log(err)
+          res.status(400).send({message:"Bad Request"})
+        })
+      }).catch((err)=>{
+        console.log(err)
+        res.status(400).send({message:"Bad Request"})
+      })
+    }
+  })
+})
+
 function partnerValidate(req,res,next){
   token2id(req.get("x-access-token")).then((id)=>{
     users.findById(id).then((partner)=>{
