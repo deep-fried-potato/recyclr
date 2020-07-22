@@ -193,6 +193,15 @@ router.post("/cart",userValidate,(req,res)=>{
   })
 })
 
+router.delete("/cart",userValidate,(req,res)=>{
+  users.findByIdAndUpdate(req.body.userId,{$set:{cart:[]},cartValue:0},{new:true}).then((user)=>{
+    res.send(user)
+  }).catch((err)=>{
+    console.log(err)
+    res.status(400).send({message:"Bad Request"})
+  })
+})
+
 function adminValidate(req,res,next){
   token2id(req.get("x-access-token")).then((id)=>{
     users.findById(id).then((admin)=>{
