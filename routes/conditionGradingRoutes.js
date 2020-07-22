@@ -34,8 +34,6 @@ function estimate(req,res,next){
         }).catch((err)=>{
             res.status(400).send({message:"Estimate na hopaya"})
           })
-        
-        
     }
 
     setTimeout(() => { res.send({'estimate':estimation*1.1})}, 1000);
