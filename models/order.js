@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var ObjectId = Schema.Types.ObjectId
 
-var orderchema = new Schema({
+var orderSchema = new Schema({
     buyer:{
         type:ObjectId,
         ref:'user'

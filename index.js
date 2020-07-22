@@ -14,6 +14,7 @@ var auth = require('./routes/auth');
 var adminRoutes = require('./routes/adminRoutes');
 var shopRoutes = require('./routes/shopRoutes');
 var partnerRoutes = require('./routes/partnerRoutes');
+var condtitionGradingRoutes = require('./routes/conditionGradingRoutes')
 
 app.use((req,res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -21,10 +22,14 @@ app.use((req,res, next) => {
   next();
 });
 
+
+
 app.use("/auth",auth)
 app.use("/admin",adminRoutes)
 app.use("/shop",shopRoutes)
 app.use("/partner",partnerRoutes)
+app.use("/conditionGrading",condtitionGradingRoutes)
+
 
 mongoose.connect('mongodb+srv://dbman:royya123@recyclr-pj0vn.mongodb.net/test?retryWrites=true&w=majority', {useNewUrlParser: true, useUnifiedTopology: true });
 // mongoose.set('useCreateIndex',true);
