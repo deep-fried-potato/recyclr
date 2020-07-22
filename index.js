@@ -14,7 +14,7 @@ var auth = require('./routes/auth');
 var adminRoutes = require('./routes/adminRoutes');
 var shopRoutes = require('./routes/shopRoutes');
 var partnerRoutes = require('./routes/partnerRoutes');
-var condtitionGradingRoutes = require('./routes/conditionGradingRoutes')
+var userSellingRoutes = require('./routes/userSellingRoutes')
 var paymentRoutes = require('./routes/paymentRoutes');
 
 
@@ -30,7 +30,7 @@ app.use("/auth",auth)
 app.use("/admin",adminRoutes)
 app.use("/shop",shopRoutes)
 app.use("/partner",partnerRoutes)
-app.use("/conditionGrading",condtitionGradingRoutes)
+app.use("/userSelling",userSellingRoutes)
 app.use("/payment",paymentRoutes)
 
 mongoose.connect('mongodb+srv://dbman:royya123@recyclr-pj0vn.mongodb.net/test?retryWrites=true&w=majority', {useNewUrlParser: true, useUnifiedTopology: true });

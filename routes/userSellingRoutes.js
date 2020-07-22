@@ -16,27 +16,28 @@ var order = require('../models/order');
 const part = require('../models/part');
 const { SSL_OP_EPHEMERAL_RSA } = require('constants');
 const { waitForDebugger } = require('inspector');
+
 var router = express.Router()
 
 
-router.post('/estimate',estimate)
+router.post("/estimate",userValidate,(req,res)=>{
+  partsList  = req.body.partsWorking
+  estimate = 0
+  for (i = 0 ; i < partsList.length; i++){
+    estimate = estimate + partsList[i].price
+  }
+  estimate = estimate*1.2
+  res.send({'estimate':estimate})
+})
 
-
-function estimate(req,res,next){
-
-    estimation = 0;
-    p = req.body.partsWorking
-    for (i = 0 ; i < req.body.partsWorking.length; i++){
-
-        parts.findById(p[i]).then((result)=>{
-            estimation = estimation + result.price
-            console.log(i)      
-        }).catch((err)=>{
-            res.status(400).send({message:"Estimate na hopaya"})
-          })
-    }
-
-    setTimeout(() => { res.send({'estimate':estimation*1.1})}, 1000);
+function userValidate(req,res,next){
+  token2id(req.get("x-access-token")).then((id)=>{
+    users.findById(id).then((user)=>{
+        req.body.userId = id;
+        next();
+    })
+  }).catch((err)=>{
+    res.status(403).send({message:"Token Error"})
+  })
 }
-
 module.exports = router

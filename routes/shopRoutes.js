@@ -89,36 +89,6 @@ router.post("/device",adminValidate,(req,res)=>{
   })
 })
 
-router.post("/purchase",userValidate,(req,res)=>{
-
-  // users.findById(req.body.userId).then((user)=>{
-  //   var headers = { 'X-Api-Key': 'test_5a1d46a388ebd805a5d4ee9a4a9', 'X-Auth-Token': 'test_d2c84430c6ee4fe07127ea80b8c'}
-  //   var payload = {
-  //     purpose: req.params.issueId,
-  //     amount: req.body.amount,
-  //     phone: '9999999999',
-  //     buyer_name: user.name,
-  //     redirect_url: 'http://test.instamojo.com',
-  //     send_email: true,
-  //     webhook: 'http://139.59.75.22:3000/authority/confirmPayment',
-  //     send_sms: false,
-  //     email: user.email,
-  //     allow_repeated_payments: false}
-  //
-  //   request.post('https://test.instamojo.com/api/1.1/payment-requests/', {form: payload,  headers: headers}, function(error, response, body){
-  //     if(!error && response.statusCode == 201) res.send(body);
-  //   })
-  // }).catch((err)=>{
-  //   console.log(err)
-  //   res.status(500).send({message:"Some internal error has occured"})
-  // })
-  purchase.create(req.body).then((result)=>{
-    res.send(result)
-  }).catch((err)=>{
-    res.status(400).send({message:"Invalid/Missing Details"})
-  })
-
-})
 
 
 router.get("/cart",userValidate,(req,res)=>{
