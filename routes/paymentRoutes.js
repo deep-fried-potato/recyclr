@@ -16,6 +16,15 @@ var purchase = require('../models/purchase');
 var order = require('../models/order');
 var router = express.Router()
 
+router.get('/order',userValidate,(req,res)=>{
+  order.find({buyer:req.body.userId}).then((orders)=>{
+    res.send(orders)
+  }).catch((err)=>{
+    console.log(err)
+    res.status(400).send({message:"Invalid Query"})
+  })
+})
+
 router.post('/order',userValidate,(req,res)=>{
 
   var neworder = new order({
@@ -24,8 +33,8 @@ router.post('/order',userValidate,(req,res)=>{
     amount:0,
     status:'processing'
   })
-  users.findByIdAndUpdate(req.body.userId,{$set:{cart:[]},cartValue:0}).then((result)=>{
-      neworder.items = result.cart
+  users.findByIdAndUpdate(req.body.userId,{$set:{cart:[]},cartValue:0}).populate('cart').then((result)=>{
+      neworder.items = result.cart.map(a => a.part)
       neworder.amount = result.cartValue
       neworder.save()
       console.log("Calling payment API")
