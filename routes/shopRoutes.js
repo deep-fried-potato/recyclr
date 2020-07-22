@@ -11,6 +11,8 @@ var users = require('../models/user');
 
 var parts = require('../models/part');
 var devices = require('../models/device');
+var purchase = require('../models/purchase');
+var order = require('../models/order');
 var router = express.Router()
 
 
@@ -110,7 +112,33 @@ router.post("/purchase",userValidate,(req,res)=>{
   //   console.log(err)
   //   res.status(500).send({message:"Some internal error has occured"})
   // })
+  purchase.create(req.body).then((result)=>{
+    res.send(result)
+  }).catch((err)=>{
+    res.status(400).send({message:"Invalid/Missing Details"})
+  })
+  
 })
+
+
+router.post('/order',userValidate,(req,res)=>{
+
+  var neworder = new order({
+    buyer: req.body.buyer,
+    items:[],
+    amount:0,
+    status:'processing'
+  })
+  users.findByIdAndUpdate(req.body.buyer,{$set:{cart:[]},cartValue:0}).populate('cart').then((result)=>{
+      neworder = result.cart
+      amount = result.cartValue
+      neworder.save()
+  }).catch((err)=>{
+    res.status(400).send({message:"Invalid Query"})
+  })
+
+})
+
 
 router.get("/cart",userValidate,(req,res)=>{
   users.findById(req.body.userId).populate("cart.part").then((user)=>{
