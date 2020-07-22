@@ -30,6 +30,7 @@
     "mongoose": "^5.9.25",
     "nodemailer": "^6.4.3",
     "nodemon": "^2.0.4",
-    "package.json": "^2.0.1"
+    "package.json": "^2.0.1",
+    "request": "^2.88.2"
   }
 }

@@ -11,8 +11,8 @@ var paymentValidator = function(body){
   	string = string + element +"|"
   });
 
-  var hash = hmacsha1(string.slice(0,-1),"cbb5f98b771f4fd9a733c41d920874f6");
-  if((hash.toString()==body.mac) && (body.status=="Credit")){
+  var hash = hmacsha1(string.slice(0,-1),"8d2e7e1d19ef4066ba6509cdea480c8f");
+  if(hash.toString()==body.mac){
     return true
   }
   else{

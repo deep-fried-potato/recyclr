@@ -117,25 +117,6 @@ router.post("/purchase",userValidate,(req,res)=>{
   }).catch((err)=>{
     res.status(400).send({message:"Invalid/Missing Details"})
   })
-  
-})
-
-
-router.post('/order',userValidate,(req,res)=>{
-
-  var neworder = new order({
-    buyer: req.body.buyer,
-    items:[],
-    amount:0,
-    status:'processing'
-  })
-  users.findByIdAndUpdate(req.body.buyer,{$set:{cart:[]},cartValue:0}).populate('cart').then((result)=>{
-      neworder = result.cart
-      amount = result.cartValue
-      neworder.save()
-  }).catch((err)=>{
-    res.status(400).send({message:"Invalid Query"})
-  })
 
 })
 
