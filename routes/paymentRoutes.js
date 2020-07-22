@@ -36,25 +36,30 @@ router.post('/order',userValidate,(req,res)=>{
   users.findByIdAndUpdate(req.body.userId,{$set:{cart:[]},cartValue:0}).populate('cart').then((result)=>{
       neworder.items = result.cart.map(a => a.part)
       neworder.amount = result.cartValue
-      neworder.save()
-      console.log("Calling payment API")
-      var headers = { 'X-Api-Key': 'test_9506a69f44e1feb678d6275bc97', 'X-Auth-Token': 'test_00efe9868932c51b6ca50f8e7e3'}
-      var payload = {
-        purpose: neworder._id.toString(),
-        amount: neworder.amount,
-        phone: '9999999999',
-        buyer_name: result.name,
-        redirect_url: 'http://test.instamojo.com',
-        send_email: true,
-        webhook: 'http://b207d4d0a946.ngrok.io/payment/confirmPayment',
-        send_sms: false,
-        email: result.email,
-        allow_repeated_payments: false}
+      if(neworder.amount==0){
+        res.status(400).send({message:"cart value cant be zero"})
+      }
+      else{
+        neworder.save()
+        console.log("Calling payment API")
+        var headers = { 'X-Api-Key': 'test_9506a69f44e1feb678d6275bc97', 'X-Auth-Token': 'test_00efe9868932c51b6ca50f8e7e3'}
+        var payload = {
+          purpose: neworder._id.toString(),
+          amount: neworder.amount,
+          phone: '9999999999',
+          buyer_name: result.name,
+          redirect_url: 'http://test.instamojo.com',
+          send_email: true,
+          webhook: 'http://b207d4d0a946.ngrok.io/payment/confirmPayment',
+          send_sms: false,
+          email: result.email,
+          allow_repeated_payments: false}
 
-      request.post('https://test.instamojo.com/api/1.1/payment-requests/', {form: payload,  headers: headers}, function(error, response, body){
-        if(!error && response.statusCode == 201) res.send(body);
-        else res.status(400).send(error)
-      })
+        request.post('https://test.instamojo.com/api/1.1/payment-requests/', {form: payload,  headers: headers}, function(error, response, body){
+          if(!error && response.statusCode == 201) res.send(body);
+          else res.status(400).send(error)
+        })
+      }
   }).catch((err)=>{
     console.log(err)
     res.status(400).send({message:"Invalid Query"})
