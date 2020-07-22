@@ -10,6 +10,7 @@ var users = require('../models/user');
 
 var parts = require('../models/part');
 var devices = require('../models/device');
+var order = require('../models/order')
 var router = express.Router()
 
 router.get("/inventory",partnerValidate,(req,res)=>{
@@ -95,6 +96,15 @@ router.delete("/inventory",partnerValidate,(req,res)=>{
         res.status(400).send({message:"Bad Request"})
       })
     }
+  })
+})
+
+router.get("/order",partnerValidate,(req,res)=>{
+  order.find().populate("buyer").then((orders)=>{
+    res.send(orders)
+  }).catch((err)=>{
+    console.log(err)
+    res.status(400).send({message:"Bad Request"})
   })
 })
 
