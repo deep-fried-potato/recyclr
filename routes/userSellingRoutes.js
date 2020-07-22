@@ -22,13 +22,50 @@ var router = express.Router()
 
 router.post("/estimate",userValidate,(req,res)=>{
   partsList  = req.body.partsWorking
-  estimate = 0
-  for (i = 0 ; i < partsList.length; i++){
-    estimate = estimate + partsList[i].price
-  }
-  estimate = estimate*1.2
-  res.send({'estimate':estimate})
+  res.send({'estimate':estimate(partsList)})
 })
+
+router.post("/userSale",userValidate,(req,res)=>{
+  purchase.create({
+    seller:req.body.userId,
+    item:req.body.device,
+    amount:estimate(req.body.partsWorking),
+    partsWorking:req.body.partsWorking.map(a=> a._id),
+    status:"processing"
+  }).then((result)=>{
+    res.status(201).send(result)
+  }).catch((err)=>{
+    console.log(err)
+    res.send(400).send({message:"Invalid"})
+  })
+})
+
+router.get("/userSale",userValidate,(req,res)=>{
+  purchase.find().populate('seller').then((purchases)=>{
+    res.send(purchases)
+  }).catch((err)=>{
+    console.log(err)
+    res.send(400).send({message:"Invalid"})
+  })
+})
+
+router.post("/acceptUserSale",userValidate,(req,res)=>{
+  purchase.findByIdAndUpdate(req.body.purchaseId,{status:"Accepted"},{new:true}).then((updated)=>{
+    res.send(updated)
+  }).catch((err)=>{
+    console.log(err)
+    res.send(400).send({message:"Invalid"})
+  })
+})
+
+function estimate(partsList){
+  var total = 0
+  for (i = 0 ; i < partsList.length; i++){
+    total = total + partsList[i].price
+  }
+  total = total*1.2
+  return total
+}
 
 function userValidate(req,res,next){
   token2id(req.get("x-access-token")).then((id)=>{
