@@ -25,6 +25,9 @@ var orderSchema = new Schema({
     },
     status:{
         type:String,
+    },
+    paymentId:{
+      type:String,
     }
 })
 
