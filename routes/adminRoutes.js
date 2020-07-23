@@ -91,7 +91,7 @@ router.put("/user/:id",adminValidate,(req,res)=>{
   })
 })
 router.delete("/user/:id",adminValidate,(req,res)=>{
-  parts.findByIdAndRemove(req.params.id).then((result)=>{
+  users.findByIdAndRemove(req.params.id).then((result)=>{
     res.send(result)
   }).catch((err)=>{
     console.log(err)
