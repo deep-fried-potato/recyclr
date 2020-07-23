@@ -91,7 +91,7 @@ function estimate(partsList){
     total = total + partsList[i].price
   }
   total = total*1.2
-  return total
+  return Math.round(total)
 }
 
 function userValidate(req,res,next){
