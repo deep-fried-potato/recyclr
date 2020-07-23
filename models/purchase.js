@@ -25,7 +25,7 @@ var purchaseSchema = new Schema({
     },
     partsWorking:[{
         type:ObjectId,
-        ref:'parts'
+        ref:'part'
     }],
     status:{
         type:String,
