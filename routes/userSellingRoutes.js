@@ -41,7 +41,7 @@ router.post("/userSale",userValidate,(req,res)=>{
 })
 
 router.get("/userSale",userValidate,(req,res)=>{
-  purchase.find(req.query).populate('seller partsWorking item').then((purchases)=>{
+  purchase.find(req.query).populate('seller partsWorking item shop').then((purchases)=>{
     res.send(purchases)
   }).catch((err)=>{
     console.log(err)
