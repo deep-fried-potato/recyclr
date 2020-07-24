@@ -17,7 +17,7 @@ var order = require('../models/order');
 var router = express.Router()
 
 router.get('/order',userValidate,(req,res)=>{
-  order.find({buyer:req.body.userId}).then((orders)=>{
+  order.find({buyer:req.body.userId}).populate("buyer items").then((orders)=>{
     res.send(orders)
   }).catch((err)=>{
     console.log(err)
