@@ -100,7 +100,7 @@ router.delete("/inventory",partnerValidate,(req,res)=>{
 })
 
 router.get("/order",partnerValidate,(req,res)=>{
-  order.find().populate("buyer items").then((orders)=>{
+  order.find(req.query).populate("buyer items").then((orders)=>{
     res.send(orders)
   }).catch((err)=>{
     console.log(err)
