@@ -28,7 +28,7 @@
     "jsonwebtoken": "^8.5.1",
     "mocha": "^7.1.0",
     "mongoose": "^5.9.25",
-    "nodemailer": "^6.4.3",
+    "nodemailer": "^6.4.16",
     "nodemon": "^2.0.4",
     "package.json": "^2.0.1",
     "request": "^2.88.2"
